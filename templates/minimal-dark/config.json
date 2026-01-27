@@ -1,0 +1,21 @@
+{
+  "id": "minimal-dark",
+  "name": "Minimal Dark",
+  "description": "Clean, professional dark theme with subtle gradients",
+  "version": "1.0.0",
+  "author": "ProfileAgent Team",
+  "preview": "./preview.png",
+  "variables": {
+    "primaryColor": "#58a6ff",
+    "backgroundColor": "#0d1117",
+    "textColor": "#c9d1d9",
+    "accentColor": "#238636"
+  },
+  "features": {
+    "showStats": true,
+    "showProjects": true,
+    "showAchievements": true,
+    "maxProjects": 6,
+    "maxAchievements": 5
+  }
+}

@@ -1,0 +1,25 @@
+## 💼 Portfolio
+
+<div align="center">
+
+<table>
+<tr>
+{{#projects}}
+{{#isFeatured}}
+<td width="33%" align="center">
+  <h3><a href="{{repoUrl}}">{{name}}</a></h3>
+  <p>{{description}}</p>
+  <p>
+  {{#technologies}}
+  <code>{{.}}</code>
+  {{/technologies}}
+  </p>
+  <p>⭐ {{stars}} stars</p>
+  {{#liveUrl}}<a href="{{liveUrl}}">🔗 Live Demo</a>{{/liveUrl}}
+</td>
+{{/isFeatured}}
+{{/projects}}
+</tr>
+</table>
+
+</div>

@@ -1,0 +1,22 @@
+{
+  "id": "portfolio-grid",
+  "name": "Portfolio Grid",
+  "description": "Project-focused layout with visual cards for showcasing work",
+  "version": "1.0.0",
+  "author": "ProfileAgent Team",
+  "preview": "./preview.png",
+  "variables": {
+    "primaryColor": "#6366f1",
+    "secondaryColor": "#8b5cf6",
+    "backgroundColor": "#ffffff",
+    "textColor": "#1f2937"
+  },
+  "features": {
+    "showStats": true,
+    "showProjects": true,
+    "showAchievements": true,
+    "maxProjects": 9,
+    "maxAchievements": 6,
+    "gridLayout": true
+  }
+}
