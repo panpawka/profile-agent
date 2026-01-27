@@ -78,9 +78,7 @@ export interface GitHubStats {
   totalRepos: number;
   totalStars: number;
   totalForks: number;
-  totalContributions: number;
   topLanguages: { language: string; percentage: number }[];
-  contributionStreak?: number;
   lastUpdated: string;
 }
 

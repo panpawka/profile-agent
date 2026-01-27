@@ -62,7 +62,6 @@ export async function extractCommand(options: ExtractOptions = {}) {
       totalRepos: githubData.stats.totalRepos,
       totalStars: githubData.stats.totalStars,
       totalForks: githubData.stats.totalForks,
-      totalContributions: 0, // TODO: Fetch from API
       topLanguages: githubData.stats.topLanguages.map((l: any) => ({
         language: l.language,
         percentage: Math.round((l.count / githubData.stats.totalRepos) * 100),
@@ -135,7 +134,6 @@ export async function extractCommand(options: ExtractOptions = {}) {
         totalRepos: 0,
         totalStars: 0,
         totalForks: 0,
-        totalContributions: 0,
         topLanguages: [],
         lastUpdated: new Date().toISOString(),
       },

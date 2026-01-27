@@ -54,7 +54,6 @@ export async function updateCommand(options: UpdateOptions = {}) {
       totalRepos: stats.totalRepos,
       totalStars: stats.totalStars,
       totalForks: stats.totalForks,
-      totalContributions: 0,
       topLanguages: stats.topLanguages.map((l: any) => ({
         language: l.language,
         percentage: Math.round((l.count / stats.totalRepos) * 100),

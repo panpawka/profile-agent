@@ -1,0 +1,20 @@
+<h2 align="center">🛠️ Featured Projects</h2>
+
+<div align="center">
+{{#projects}}
+  {{#isFeatured}}
+  <h3><a href="{{repoUrl}}">{{name}}</a></h3>
+  <p>{{description}}</p>
+  <p>
+    {{#technologies}}
+    <code>{{.}}</code>
+    {{/technologies}}
+  </p>
+  <p>
+    <img src="https://img.shields.io/github/stars/{{githubStats.username}}/{{name}}?style=flat-square" />
+    <img src="https://img.shields.io/github/forks/{{githubStats.username}}/{{name}}?style=flat-square" />
+  </p>
+  <br />
+  {{/isFeatured}}
+{{/projects}}
+</div>

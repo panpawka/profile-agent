@@ -1,0 +1,20 @@
+{
+  "id": "modern-visualist",
+  "name": "Modern Visualist",
+  "description": "A visually rich template featuring centered layouts, icon grids for technologies, and advanced GitHub metrics. Inspired by top GitHub profiles.",
+  "version": "1.0.0",
+  "author": "ProfileAgent",
+  "preview": "./preview.png",
+  "variables": {
+    "primaryColor": "#58a6ff",
+    "accentColor": "#238636",
+    "iconSize": "40"
+  },
+  "features": {
+    "showStats": true,
+    "showProjects": true,
+    "showSkillsGrid": true,
+    "showWakatime": true,
+    "centered": true
+  }
+}

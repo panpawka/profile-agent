@@ -2,7 +2,9 @@
 
 > AI-powered GitHub Profile README generator
 
-ProfileAgent is an open-source CLI tool that transforms your professional context (CVs, GitHub repos, LinkedIn) into polished, auto-updating GitHub profile READMEs using cost-efficient AI models.
+ProfileAgent is an open-source tool that transforms your professional context (CVs, GitHub repos, LinkedIn) into polished, auto-updating GitHub profile READMEs using cost-efficient AI models.
+
+**🚀 Currently available as CLI • Web app coming soon!**
 
 ## Features
 
@@ -79,13 +81,14 @@ Your `README.md` is now ready! 🎉
 
 ## Available Templates
 
-All 5 V1 templates are now available:
+All 6 templates are now available:
 
 - **minimal-dark**: Clean, professional dark theme with subtle gradients
 - **minimal-light**: Bright, airy design for corporate environments
 - **portfolio-grid**: Project-focused layout with visual cards
 - **stats-heavy**: Emphasis on GitHub statistics and activity graphs
 - **narrative**: Story-driven layout highlighting career journey
+- **modern-visualist**: Contemporary design with bold visuals and animations
 
 Use `profile-agent templates` to see all templates!
 
@@ -164,7 +167,7 @@ templates/            # Mustache templates
 ### ✅ Implemented (Beta - v0.5.0)
 
 - ✅ **LinkedIn PDF import** with structured extraction
-- ✅ **All 5 V1 templates** (minimal-dark, minimal-light, portfolio-grid, stats-heavy, narrative)
+- ✅ **6 professional templates** (minimal-dark, minimal-light, portfolio-grid, stats-heavy, narrative, modern-visualist)
 - ✅ **GitHub OAuth integration** (Personal Access Token flow)
 - ✅ **Direct GitHub push** to profile repository
 - ✅ **GitHub Actions generation** for auto-updates
@@ -172,12 +175,23 @@ templates/            # Mustache templates
 - ✅ **Profile data editing** (CLI and file-based)
 - ✅ **Templates list command**
 - ✅ **Update command** for refreshing GitHub stats
+- ✅ **Test coverage**: 15 tests passing across parsers, templates, and core logic
 
-### 🔮 Future (v1.0.0)
+### 🚧 In Progress (v0.6.0 - Web App)
 
-- Full programmatic API
-- Template preview system
-- Community template guidelines
+- 🔄 **Web application interface** - Moving from CLI to full web app
+- 🔄 **Online profile generation** - No installation required
+- 🔄 **Live template preview** - See changes in real-time
+- 🔄 **User authentication** - Save and manage multiple profiles
+- 🔄 **Template marketplace** - Browse and customize templates online
+
+### 🔮 Future (v1.0.0+)
+
+- Full REST API for integrations
+- Community template marketplace
+- One-click deploy to GitHub Pages
+- Advanced analytics and insights
+- Multi-language support
 - Test coverage >80%
 
 ## Contributing

@@ -36,6 +36,7 @@ export interface GitHubStats {
   totalForks: number;
   topLanguages: { language: string; count: number }[];
   featuredRepos: GitHubRepository[];
+  lastUpdated?: string;
 }
 
 export class GitHubClient {
