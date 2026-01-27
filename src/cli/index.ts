@@ -5,6 +5,10 @@ import { initCommand } from './commands/init';
 import { addCommand } from './commands/add';
 import { extractCommand } from './commands/extract';
 import { generateCommand } from './commands/generate';
+import { deployCommand } from './commands/deploy';
+import { editCommand } from './commands/edit';
+import { templatesCommand } from './commands/templates';
+import { updateCommand } from './commands/update';
 
 dotenv.config();
 
@@ -13,7 +17,7 @@ const program = new Command();
 program
   .name('profile-agent')
   .description('AI-powered GitHub Profile README generator')
-  .version('0.1.0');
+  .version('0.5.0');
 
 program
   .command('init')
@@ -37,6 +41,17 @@ program
   .action(extractCommand);
 
 program
+  .command('edit')
+  .description('Edit extracted profile data')
+  .option('--file', 'Open profile-data.json in $EDITOR')
+  .action(editCommand);
+
+program
+  .command('templates')
+  .description('List available templates')
+  .action(templatesCommand);
+
+program
   .command('generate')
   .description('Generate README from profile data')
   .option('--theme <id>', 'Template theme ID')
@@ -45,9 +60,15 @@ program
 
 program
   .command('deploy')
-  .description('Deploy to GitHub')
-  .action(() => {
-    console.log('Deploy command coming soon!');
-  });
+  .description('Deploy README to GitHub')
+  .option('--setup-action', 'Setup GitHub Actions for auto-updates')
+  .option('--no-action', 'Skip GitHub Actions setup')
+  .action(deployCommand);
+
+program
+  .command('update')
+  .description('Update GitHub stats in profile data')
+  .option('--full', 'Re-run full AI extraction')
+  .action(updateCommand);
 
 program.parse(process.argv);

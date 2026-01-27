@@ -79,10 +79,15 @@ Your `README.md` is now ready! 🎉
 
 ## Available Templates
 
-- **minimal-dark**: Clean, professional dark theme with subtle gradients
-- **portfolio-grid**: Project-focused layout with visual cards
+All 5 V1 templates are now available:
 
-More templates coming soon!
+- **minimal-dark**: Clean, professional dark theme with subtle gradients
+- **minimal-light**: Bright, airy design for corporate environments
+- **portfolio-grid**: Project-focused layout with visual cards
+- **stats-heavy**: Emphasis on GitHub statistics and activity graphs
+- **narrative**: Story-driven layout highlighting career journey
+
+Use `profile-agent templates` to see all templates!
 
 ## Configuration
 
@@ -145,25 +150,28 @@ templates/            # Mustache templates
 
 ## Project Status
 
-**Current Version**: v0.1.0 (MVP)
+**Current Version**: v0.5.0 (Beta)
 
-### ✅ Implemented (MVP)
+### ✅ Implemented (MVP - v0.1.0)
 
-- ✅ CV/PDF parsing
+- ✅ CV/PDF parsing (PDF & DOCX support)
 - ✅ GitHub repository scanning
-- ✅ AI extraction with Gemini Flash
+- ✅ AI extraction with Gemini Flash & GPT-4o-mini
 - ✅ 2 starter templates (minimal-dark, portfolio-grid)
 - ✅ CLI-based generation and local output
 - ✅ Basic README generation
 
-### 🚧 Coming Next (Beta - v0.5.0)
+### ✅ Implemented (Beta - v0.5.0)
 
-- LinkedIn PDF import
-- GitHub OAuth integration
-- Direct GitHub push
-- GitHub Actions generation
-- Interactive content editor
-- All 5 V1 templates
+- ✅ **LinkedIn PDF import** with structured extraction
+- ✅ **All 5 V1 templates** (minimal-dark, minimal-light, portfolio-grid, stats-heavy, narrative)
+- ✅ **GitHub OAuth integration** (Personal Access Token flow)
+- ✅ **Direct GitHub push** to profile repository
+- ✅ **GitHub Actions generation** for auto-updates
+- ✅ **Interactive content editor** for profile data
+- ✅ **Profile data editing** (CLI and file-based)
+- ✅ **Templates list command**
+- ✅ **Update command** for refreshing GitHub stats
 
 ### 🔮 Future (v1.0.0)
 

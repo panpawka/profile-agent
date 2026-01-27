@@ -1,0 +1,65 @@
+# Hi there, I'm {{name}} 👋
+
+## My Journey
+
+{{bio}}
+
+---
+
+## 🎯 What I've Accomplished
+
+{{#achievements}}
+{{#isHighlighted}}
+### ⭐ {{text}}
+
+{{/isHighlighted}}
+{{^isHighlighted}}
+- {{text}}
+{{/isHighlighted}}
+{{/achievements}}
+
+---
+
+## 💡 Notable Projects
+
+{{#projects}}
+{{#isFeatured}}
+### {{name}}
+
+> {{description}}
+
+**Built with:** {{#technologies}}{{.}}, {{/technologies}}
+
+[View Project]({{repoUrl}}){{#liveUrl}} | [Live Demo]({{liveUrl}}){{/liveUrl}}
+
+---
+
+{{/isFeatured}}
+{{/projects}}
+
+## 🧰 My Toolkit
+
+{{#skills}}
+**{{category}}**
+
+{{#skills}}
+- {{name}}{{#yearsOfExperience}} ({{yearsOfExperience}}+ years){{/yearsOfExperience}}
+{{/skills}}
+
+{{/skills}}
+
+---
+
+## 📫 Let's Connect
+
+{{#socialLinks}}
+- [{{platform}}]({{url}})
+{{/socialLinks}}
+- [GitHub](https://github.com/{{githubStats.username}})
+{{#email}}
+- [Email](mailto:{{email}})
+{{/email}}
+
+---
+
+<sub>This profile tells my story. What's yours? Check out [ProfileAgent](https://github.com/profileagent/profileagent)</sub>

@@ -1,0 +1,21 @@
+{
+  "id": "stats-heavy",
+  "name": "Stats Heavy",
+  "description": "Emphasis on GitHub statistics and activity graphs for active OSS contributors",
+  "version": "1.0.0",
+  "author": "ProfileAgent Team",
+  "preview": "./preview.png",
+  "variables": {
+    "primaryColor": "#f97316",
+    "secondaryColor": "#fb923c",
+    "backgroundColor": "#1a1a1a",
+    "textColor": "#e5e7eb"
+  },
+  "features": {
+    "showStats": true,
+    "showProjects": true,
+    "showAchievements": false,
+    "maxProjects": 4,
+    "statsEmphasis": true
+  }
+}

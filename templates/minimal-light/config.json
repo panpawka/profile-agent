@@ -1,0 +1,22 @@
+{
+  "id": "minimal-light",
+  "name": "Minimal Light",
+  "description": "Bright, airy design with soft shadows for corporate environments",
+  "version": "1.0.0",
+  "author": "ProfileAgent Team",
+  "preview": "./preview.png",
+  "variables": {
+    "primaryColor": "#0969da",
+    "secondaryColor": "#218bff",
+    "backgroundColor": "#ffffff",
+    "textColor": "#24292f",
+    "borderColor": "#d0d7de"
+  },
+  "features": {
+    "showStats": true,
+    "showProjects": true,
+    "showAchievements": true,
+    "maxProjects": 6,
+    "maxAchievements": 6
+  }
+}

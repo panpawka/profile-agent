@@ -1,0 +1,14 @@
+## Featured Projects
+
+{{#projects}}
+{{#isFeatured}}
+### [{{name}}]({{repoUrl}}) ⭐ {{stars}}
+
+{{description}}
+
+**Technologies:** {{#technologies}}`{{.}}` {{/technologies}}
+
+{{#liveUrl}}🔗 [Live Demo]({{liveUrl}}){{/liveUrl}}
+
+{{/isFeatured}}
+{{/projects}}

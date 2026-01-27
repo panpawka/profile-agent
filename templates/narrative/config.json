@@ -1,0 +1,22 @@
+{
+  "id": "narrative",
+  "name": "Narrative",
+  "description": "Story-driven layout highlighting career journey and personal growth",
+  "version": "1.0.0",
+  "author": "ProfileAgent Team",
+  "preview": "./preview.png",
+  "variables": {
+    "primaryColor": "#8b5cf6",
+    "secondaryColor": "#a78bfa",
+    "backgroundColor": "#f9fafb",
+    "textColor": "#111827"
+  },
+  "features": {
+    "showStats": false,
+    "showProjects": true,
+    "showAchievements": true,
+    "maxProjects": 5,
+    "maxAchievements": 8,
+    "narrativeStyle": true
+  }
+}
