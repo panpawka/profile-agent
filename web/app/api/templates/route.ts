@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { TemplateEngine } from '@/../../src/templates/loader';
+import { TemplateEngine } from '@cli/src/templates/loader';
 
 export async function GET() {
   try {

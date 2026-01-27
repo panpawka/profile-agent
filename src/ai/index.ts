@@ -189,5 +189,5 @@ export class AIExtractor {
   }
 }
 
-export { AIProvider, AIConfig };
+export type { AIProvider, AIConfig };
 

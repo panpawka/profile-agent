@@ -66,7 +66,7 @@ export class GitHubClient {
         location: data.location,
         email: data.email,
         blog: data.blog,
-        twitterUsername: data.twitter_username,
+        twitterUsername: data.twitter_username || null,
         company: data.company,
         publicRepos: data.public_repos,
         followers: data.followers,
