@@ -1,41 +1,103 @@
 "use client";
 
 import * as React from "react";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Sparkles, Loader2, Download, Github } from "lucide-react";
-import { MarkdownPreview } from "@/components/markdown-preview";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Sparkles, Loader2, Download, Upload, FileText, Github } from "lucide-react";
+import type { ProfileData } from "@cli/src/types/profile";
+
+const TEMPLATES = [
+  { id: "minimal-dark", name: "Minimal Dark" },
+  { id: "minimal-light", name: "Minimal Light" },
+  { id: "portfolio-grid", name: "Portfolio Grid" },
+  { id: "stats-heavy", name: "Stats Heavy" },
+  { id: "narrative", name: "Narrative" },
+  { id: "modern-visualist", name: "Modern Visualist" },
+];
 
 export default function HomePage() {
   const [content, setContent] = useState("");
   const [githubUsername, setGithubUsername] = useState("");
-  const [templateId, setTemplateId] = useState("minimal-dark");
+  const [files, setFiles] = useState<File[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [generatedMarkdown, setGeneratedMarkdown] = useState("");
+  const [generatedMarkdown, setGeneratedMarkdown] = useState<Record<string, string>>({});
+  const [profileData, setProfileData] = useState<ProfileData | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState("minimal-dark");
   const [error, setError] = useState("");
+  const [dragActive, setDragActive] = useState(false);
+
+  const handleDrag = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  }, []);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      setFiles(Array.from(e.dataTransfer.files));
+    }
+  }, []);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setFiles(Array.from(e.target.files));
+    }
+  };
 
   const handleGenerate = async () => {
-    if (!content.trim()) {
-      setError("Please paste your CV, resume, or professional information");
+    // Build content from text + files
+    let finalContent = content;
+    
+    if (files.length > 0) {
+      // Upload files first
+      for (const file of files) {
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        try {
+          const response = await fetch('/api/oneshot', {
+            method: 'POST',
+            body: formData,
+          });
+          const result = await response.json();
+          if (result.success) {
+            finalContent += "\n\n" + result.data.content;
+          }
+        } catch (err) {
+          console.error('File upload error:', err);
+        }
+      }
+    }
+
+    if (!finalContent.trim()) {
+      setError("Please add some content or upload files");
       return;
     }
 
     setIsGenerating(true);
     setError("");
-    setGeneratedMarkdown("");
 
     try {
       const response = await fetch('/api/oneshot', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          content,
+          content: finalContent,
           githubUsername,
-          templateId,
+          templateId: selectedTemplate,
           provider: 'gemini',
         }),
       });
@@ -43,7 +105,27 @@ export default function HomePage() {
       const result = await response.json();
 
       if (result.success) {
-        setGeneratedMarkdown(result.data.markdown);
+        setProfileData(result.data.profileData);
+        // Generate for all templates
+        const markdowns: Record<string, string> = {};
+        for (const template of TEMPLATES) {
+          const templateResponse = await fetch('/api/oneshot', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              content: finalContent,
+              githubUsername,
+              templateId: template.id,
+              provider: 'gemini',
+            }),
+          });
+          const templateResult = await templateResponse.json();
+          if (templateResult.success) {
+            markdowns[template.id] = templateResult.data.markdown;
+          }
+        }
+        setGeneratedMarkdown(markdowns);
+        setSelectedTemplate(TEMPLATES[0].id);
       } else {
         setError(result.error || 'Failed to generate README');
       }
@@ -56,7 +138,10 @@ export default function HomePage() {
   };
 
   const handleDownload = () => {
-    const blob = new Blob([generatedMarkdown], { type: 'text/markdown' });
+    const markdown = generatedMarkdown[selectedTemplate];
+    if (!markdown) return;
+    
+    const blob = new Blob([markdown], { type: 'text/markdown' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -74,63 +159,102 @@ export default function HomePage() {
             <Sparkles className="h-6 w-6 text-blue-400" />
             <span className="text-xl font-bold text-white">ProfileAgent</span>
           </div>
-          <div className="flex items-center gap-4">
-            <a 
-              href="https://github.com/profileagent/profileagent" 
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-white/80 hover:text-white"
-            >
-              <Github className="h-5 w-5" />
-            </a>
-          </div>
+          <a 
+            href="https://github.com/profileagent/profileagent" 
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white/80 hover:text-white transition-colors"
+          >
+            <Github className="h-5 w-5" />
+          </a>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-12">
-        <div className="max-w-6xl mx-auto">
-          {/* Hero Section */}
-          <div className="text-center mb-12">
-            <h1 className="text-5xl md:text-6xl font-bold text-white mb-4">
-              AI-Powered GitHub Profile
-              <span className="block text-blue-400 mt-2">In One Shot</span>
-            </h1>
-            <p className="text-xl text-white/70 max-w-2xl mx-auto">
-              Paste your CV, resume, or LinkedIn content. Get a beautiful GitHub README instantly.
-            </p>
-          </div>
+      <main className="container mx-auto px-4 py-8 max-w-7xl">
+        {/* Hero */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-3">
+            AI GitHub Profile Generator
+          </h1>
+          <p className="text-lg text-white/70">
+            Drop files, paste content, or write directly. Generate instantly.
+          </p>
+        </div>
 
-          <div className="grid lg:grid-cols-2 gap-6">
-            {/* Input Section */}
+        {!profileData ? (
+          /* Input Stage */
+          <div className="max-w-3xl mx-auto">
             <Card className="bg-white/5 border-white/10 backdrop-blur">
               <CardHeader>
                 <CardTitle className="text-white flex items-center gap-2">
                   <Sparkles className="h-5 w-5 text-blue-400" />
-                  Your Information
+                  Your Professional Information
                 </CardTitle>
                 <CardDescription className="text-white/60">
-                  Paste everything - CV, resume, LinkedIn export, or just write about yourself
+                  Paste CV, upload files, or type directly. We support everything.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
+                {/* File Drop Zone */}
+                <div
+                  className={cn(
+                    "border-2 border-dashed rounded-lg p-8 transition-colors",
+                    dragActive ? "border-blue-400 bg-blue-400/10" : "border-white/20",
+                    files.length > 0 && "bg-green-500/10 border-green-500/50"
+                  )}
+                  onDragEnter={handleDrag}
+                  onDragLeave={handleDrag}
+                  onDragOver={handleDrag}
+                  onDrop={handleDrop}
+                >
+                  <div className="text-center">
+                    <Upload className="h-12 w-12 mx-auto text-white/40 mb-2" />
+                    <p className="text-white/70 mb-2">
+                      {files.length > 0 ? `${files.length} file(s) selected` : 'Drag & drop files here'}
+                    </p>
+                    <p className="text-sm text-white/50 mb-3">or</p>
+                    <label htmlFor="file-upload" className="inline-block">
+                      <Button variant="outline" className="text-white border-white/20" type="button">
+                        <FileText className="mr-2 h-4 w-4" />
+                        Choose Files
+                      </Button>
+                      <input
+                        id="file-upload"
+                        type="file"
+                        multiple
+                        accept=".pdf,.docx,.doc,.txt"
+                        onChange={handleFileChange}
+                        className="hidden"
+                      />
+                    </label>
+                    {files.length > 0 && (
+                      <div className="mt-3 text-sm text-white/60">
+                        {files.map((f, i) => (
+                          <div key={i}>{f.name}</div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Text Input */}
                 <div>
                   <Label htmlFor="content" className="text-white">
-                    Professional Content
+                    Or Paste Content Directly
                   </Label>
                   <Textarea
                     id="content"
-                    placeholder="Paste your CV, resume, LinkedIn export, or write about your experience, skills, projects..."
+                    placeholder="Paste your CV, resume, LinkedIn profile, or write about yourself..."
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
-                    rows={12}
+                    rows={10}
                     className="bg-white/10 border-white/20 text-white placeholder:text-white/40 font-mono text-sm"
                   />
-                  <p className="text-xs text-white/50 mt-1">
-                    {content.length} characters
-                  </p>
+                  <p className="text-xs text-white/50 mt-1">{content.length} characters</p>
                 </div>
 
+                {/* GitHub Username */}
                 <div>
                   <Label htmlFor="github" className="text-white">
                     GitHub Username (Optional)
@@ -142,28 +266,7 @@ export default function HomePage() {
                     onChange={(e) => setGithubUsername(e.target.value)}
                     className="bg-white/10 border-white/20 text-white placeholder:text-white/40"
                   />
-                  <p className="text-xs text-white/50 mt-1">
-                    We'll fetch your GitHub stats and repos
-                  </p>
-                </div>
-
-                <div>
-                  <Label htmlFor="template" className="text-white">
-                    Template
-                  </Label>
-                  <select
-                    id="template"
-                    value={templateId}
-                    onChange={(e) => setTemplateId(e.target.value)}
-                    className="w-full h-9 rounded-md border border-white/20 bg-white/10 px-3 py-1 text-white"
-                  >
-                    <option value="minimal-dark">Minimal Dark</option>
-                    <option value="minimal-light">Minimal Light</option>
-                    <option value="portfolio-grid">Portfolio Grid</option>
-                    <option value="stats-heavy">Stats Heavy</option>
-                    <option value="narrative">Narrative</option>
-                    <option value="modern-visualist">Modern Visualist</option>
-                  </select>
+                  <p className="text-xs text-white/50 mt-1">We'll fetch your stats and repos</p>
                 </div>
 
                 {error && (
@@ -174,13 +277,14 @@ export default function HomePage() {
 
                 <Button
                   onClick={handleGenerate}
-                  disabled={isGenerating || !content.trim()}
+                  disabled={isGenerating || (!content.trim() && files.length === 0)}
                   className="w-full bg-blue-600 hover:bg-blue-700 text-lg py-6"
+                  size="lg"
                 >
                   {isGenerating ? (
                     <>
                       <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                      Generating with AI...
+                      Generating...
                     </>
                   ) : (
                     <>
@@ -191,77 +295,76 @@ export default function HomePage() {
                 </Button>
               </CardContent>
             </Card>
+          </div>
+        ) : (
+          /* Preview Stage with Template Switching */
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-white">Your README</h2>
+              <div className="flex gap-2">
+                <Button
+                  onClick={handleDownload}
+                  className="bg-green-600 hover:bg-green-700"
+                >
+                  <Download className="mr-2 h-4 w-4" />
+                  Download
+                </Button>
+                <Button
+                  onClick={() => {
+                    setProfileData(null);
+                    setGeneratedMarkdown({});
+                    setContent("");
+                    setFiles([]);
+                  }}
+                  variant="outline"
+                  className="text-white border-white/20"
+                >
+                  Start Over
+                </Button>
+              </div>
+            </div>
 
-            {/* Preview Section */}
-            <div className="space-y-4">
-              {generatedMarkdown ? (
-                <>
-                  <Card className="bg-white/5 border-white/10 backdrop-blur">
-                    <CardHeader>
-                      <CardTitle className="text-white">Preview</CardTitle>
-                      <CardDescription className="text-white/60">
-                        Your generated GitHub profile README
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="prose prose-slate dark:prose-invert max-w-none overflow-auto max-h-[500px]">
-                      <div className="text-white text-sm">
-                        <pre className="whitespace-pre-wrap">{generatedMarkdown}</pre>
+            <Card className="bg-white/5 border-white/10 backdrop-blur">
+              <CardContent className="p-6">
+                <Tabs value={selectedTemplate} onValueChange={setSelectedTemplate}>
+                  <TabsList className="bg-white/10 mb-4">
+                    {TEMPLATES.map((template) => (
+                      <TabsTrigger
+                        key={template.id}
+                        value={template.id}
+                        className="text-white/70 data-[state=active]:text-white data-[state=active]:bg-blue-600"
+                      >
+                        {template.name}
+                      </TabsTrigger>
+                    ))}
+                  </TabsList>
+
+                  {TEMPLATES.map((template) => (
+                    <TabsContent key={template.id} value={template.id}>
+                      <div className="bg-slate-900 rounded-lg p-6 overflow-auto max-h-[600px]">
+                        <pre className="text-white text-sm whitespace-pre-wrap font-mono">
+                          {generatedMarkdown[template.id] || 'Loading...'}
+                        </pre>
                       </div>
-                    </CardContent>
-                  </Card>
-                  
-                  <Button
-                    onClick={handleDownload}
-                    className="w-full bg-green-600 hover:bg-green-700"
-                  >
-                    <Download className="mr-2 h-4 w-4" />
-                    Download README.md
-                  </Button>
-                </>
-              ) : (
-                <Card className="bg-white/5 border-white/10 backdrop-blur h-[600px] flex items-center justify-center">
-                  <div className="text-center text-white/40 p-8">
-                    <Sparkles className="h-16 w-16 mx-auto mb-4 opacity-50" />
-                    <p className="text-lg">Your README will appear here</p>
-                    <p className="text-sm mt-2">Paste your content and click Generate</p>
-                  </div>
-                </Card>
-              )}
-            </div>
+                    </TabsContent>
+                  ))}
+                </Tabs>
+              </CardContent>
+            </Card>
           </div>
-
-          {/* Features */}
-          <div className="mt-16 grid md:grid-cols-3 gap-6 text-center">
-            <div className="text-white/80">
-              <div className="text-3xl font-bold text-blue-400 mb-2">⚡</div>
-              <h3 className="font-semibold mb-1">Instant Generation</h3>
-              <p className="text-sm text-white/60">No forms, no steps. Just paste and generate.</p>
-            </div>
-            <div className="text-white/80">
-              <div className="text-3xl font-bold text-purple-400 mb-2">🤖</div>
-              <h3 className="font-semibold mb-1">AI-Powered</h3>
-              <p className="text-sm text-white/60">Gemini Flash extracts your professional story.</p>
-            </div>
-            <div className="text-white/80">
-              <div className="text-3xl font-bold text-green-400 mb-2">🎨</div>
-              <h3 className="font-semibold mb-1">6 Templates</h3>
-              <p className="text-sm text-white/60">Choose from professionally designed themes.</p>
-            </div>
-          </div>
-        </div>
+        )}
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 py-8 mt-16">
+      <footer className="border-t border-white/10 py-6 mt-12">
         <div className="container mx-auto px-4 text-center text-white/50 text-sm">
-          <p>Built with ❤️ using Next.js, React, and Vercel AI SDK</p>
-          <p className="mt-2">
-            <a href="https://github.com/profileagent/profileagent" className="hover:text-white/80">
-              Open Source on GitHub
-            </a>
-          </p>
+          <p>Built with ❤️ using Next.js, React 19, and Vercel AI SDK</p>
         </div>
       </footer>
     </div>
   );
+}
+
+function cn(...classes: (string | boolean | undefined)[]) {
+  return classes.filter(Boolean).join(' ');
 }

@@ -3,21 +3,15 @@
   "version": "0.6.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio"
+    "lint": "next lint"
   },
   "dependencies": {
     "next": "^16.1.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "@neondatabase/serverless": "^1.0.2",
-    "drizzle-orm": "^0.38.3",
     "@ai-sdk/google": "^0.0.55",
     "@ai-sdk/openai": "^0.0.72",
     "ai": "^3.4.33",
@@ -27,12 +21,11 @@
     "tailwind-merge": "^2.6.0",
     "lucide-react": "^0.468.0",
     "next-themes": "^0.4.6",
-    "react-dropzone": "^14.3.5",
-    "react-markdown": "^9.0.1",
     "mammoth": "^1.8.0",
     "pdf-parse": "^1.1.1",
     "mustache": "^4.2.0",
     "@radix-ui/react-slot": "^1.1.1",
+    "@radix-ui/react-tabs": "^1.1.1",
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
@@ -45,7 +38,6 @@
     "tailwindcss": "^3.4.17",
     "postcss": "^8.4.49",
     "autoprefixer": "^10.4.20",
-    "drizzle-kit": "^0.31.2",
     "eslint": "^9.18.0",
     "eslint-config-next": "^16.1.5"
   }
