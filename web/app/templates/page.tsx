@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Check } from "lucide-react";
-import { TemplateEngine } from "@cli/src/templates/loader";
+import { TemplateEngine } from "@/lib/templates";
 
 export default async function TemplatesPage() {
   const engine = new TemplateEngine();

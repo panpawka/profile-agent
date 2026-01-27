@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { TemplateEngine } from '@cli/src/templates/loader';
+import { TemplateEngine } from '@/lib/templates';
 import type { ProfileData } from '@cli/src/types/profile';
 
 export const runtime = 'nodejs';
