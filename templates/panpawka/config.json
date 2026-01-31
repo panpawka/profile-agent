@@ -1,0 +1,25 @@
+{
+  "id": "panpawka",
+  "name": "Panpawka Professional",
+  "description": "Comprehensive professional profile with tech badges, project tables, and detailed experience sections. Ideal for senior developers and product leaders.",
+  "version": "1.0.0",
+  "author": "Pawel Szpiczakowski",
+  "preview": "./preview.png",
+  "variables": {
+    "primaryColor": "#0077B5",
+    "backgroundColor": "#ffffff",
+    "textColor": "#333333",
+    "accentColor": "#2088FF"
+  },
+  "features": {
+    "showStats": true,
+    "showProjects": true,
+    "showAchievements": true,
+    "showTechBadges": true,
+    "showExperience": true,
+    "showSkillCategories": true,
+    "maxProjects": 10,
+    "maxAchievements": 8,
+    "projectDisplayStyle": "table"
+  }
+}

@@ -5,7 +5,50 @@ import { LinkedInParser } from './parsers/linkedin';
 import { GitHubClient, GitHubStats } from './github';
 import { AIExtractor, AIConfig, ExtractionContext, ExtractionResult } from './ai';
 import { TemplateRenderer } from './templates';
-import type { ProfileData, GitHubStats as ProfileGitHubStats } from './types/profile';
+import type { ProfileData, Skill, GitHubStats as ProfileGitHubStats } from './types/profile';
+
+/**
+ * Helper to encode shields.io label
+ */
+function encodeShieldsLabel(text: string): string {
+  if (!text) return '';
+  return text
+    .replace(/-/g, '--')
+    .replace(/ /g, '_')
+    .replace(/[^\w\s\-\_]/g, (char) => encodeURIComponent(char));
+}
+
+/**
+ * Create a skill with badge metadata  
+ */
+function createSkill(name: string, proficiency?: Skill['proficiency']): Skill {
+  // Simple color and logo mapping for sample data
+  const colors: Record<string, string> = {
+    'JavaScript': '3178F7DF1E', 'TypeScript': '3178C6', 'Python': '3776AB',
+    'Go': '00ADD8', 'Rust': '000000', 'React': '61DAFB', 'Next.js': '000000',
+    'Vue.js': '4FC08D', 'Tailwind CSS': '06B6D4', 'Node.js': '339933',
+    'Express': '000000', 'PostgreSQL': '4169E1', 'MongoDB': '47A248',
+    'Docker': '2496ED', 'Kubernetes': '326CE5', 'Git': 'F05032',
+    'GitHub Actions': '2088FF', 'AWS': 'FF9900'
+  };
+  
+  const logos: Record<string, string> = {
+    'JavaScript': 'javascript', 'TypeScript': 'typescript', 'Python': 'python',
+    'Go': 'go', 'Rust': 'rust', 'React': 'react', 'Next.js': 'next.js',
+    'Vue.js': 'vue.js', 'Tailwind CSS': 'tailwindcss', 'Node.js': 'node.js',
+    'Express': 'express', 'PostgreSQL': 'postgresql', 'MongoDB': 'mongodb',
+    'Docker': 'docker', 'Kubernetes': 'kubernetes', 'Git': 'git',
+    'GitHub Actions': 'githubactions', 'AWS': 'amazonaws'
+  };
+  
+  return {
+    name,
+    encoded: encodeShieldsLabel(name),
+    color: colors[name] || '2563EB',
+    logo: logos[name] || name.toLowerCase().replace(/[.\s]/g, ''),
+    proficiency
+  };
+}
 
 export interface ProfileAgentConfig {
   aiProvider: 'gemini' | 'openai';
@@ -196,10 +239,10 @@ export class ProfileAgent {
       achievements: result.achievements,
       experience: [],
       projects: result.projects,
-      education: [],
       certifications: [],
       socialLinks: this.buildSocialLinks(),
       githubStats,
+      techStack: result.techStack,
       templateId: this.config.defaultTemplate || 'minimal-dark',
     };
 
@@ -288,40 +331,40 @@ export class ProfileAgent {
         {
           category: 'Languages',
           skills: [
-            { name: 'JavaScript', proficiency: 'expert' as const },
-            { name: 'TypeScript', proficiency: 'expert' as const },
-            { name: 'Python', proficiency: 'advanced' as const },
-            { name: 'Go', proficiency: 'intermediate' as const },
-            { name: 'Rust', proficiency: 'intermediate' as const },
+            createSkill('JavaScript', 'expert'),
+            createSkill('TypeScript', 'expert'),
+            createSkill('Python', 'advanced'),
+            createSkill('Go', 'intermediate'),
+            createSkill('Rust', 'intermediate'),
           ],
         },
         {
           category: 'Frontend',
           skills: [
-            { name: 'React', proficiency: 'expert' as const },
-            { name: 'Next.js', proficiency: 'advanced' as const },
-            { name: 'Vue.js', proficiency: 'advanced' as const },
-            { name: 'Tailwind CSS', proficiency: 'expert' as const },
+            createSkill('React', 'expert'),
+            createSkill('Next.js', 'advanced'),
+            createSkill('Vue.js', 'advanced'),
+            createSkill('Tailwind CSS', 'expert'),
           ],
         },
         {
           category: 'Backend',
           skills: [
-            { name: 'Node.js', proficiency: 'expert' as const },
-            { name: 'Express', proficiency: 'expert' as const },
-            { name: 'FastAPI', proficiency: 'advanced' as const },
-            { name: 'PostgreSQL', proficiency: 'advanced' as const },
-            { name: 'MongoDB', proficiency: 'advanced' as const },
+            createSkill('Node.js', 'expert'),
+            createSkill('Express', 'expert'),
+            createSkill('PostgreSQL', 'advanced'),
+            createSkill('MongoDB', 'advanced'),
+            createSkill('GraphQL', 'advanced'),
           ],
         },
         {
-          category: 'DevOps',
+          category: 'Tools & DevOps',
           skills: [
-            { name: 'Docker', proficiency: 'expert' as const },
-            { name: 'Kubernetes', proficiency: 'advanced' as const },
-            { name: 'AWS', proficiency: 'advanced' as const },
-            { name: 'GitHub Actions', proficiency: 'expert' as const },
-            { name: 'Terraform', proficiency: 'intermediate' as const },
+            createSkill('Docker', 'expert'),
+            createSkill('Kubernetes', 'advanced'),
+            createSkill('AWS', 'advanced'),
+            createSkill('Git', 'expert'),
+            createSkill('GitHub Actions', 'intermediate'),
           ],
         },
       ],
@@ -356,7 +399,11 @@ export class ProfileAgent {
         {
           name: 'awesome-cloud-toolkit',
           description: 'A comprehensive toolkit for cloud infrastructure management',
-          technologies: ['TypeScript', 'AWS', 'Terraform'],
+          technologies: [
+            { name: 'TypeScript', encoded: 'TypeScript', color: '3178C6', logo: 'typescript' },
+            { name: 'AWS', encoded: 'AWS', color: 'FF9900', logo: 'amazonaws' },
+            { name: 'Terraform', encoded: 'Terraform', color: '7B42BC', logo: 'terraform' },
+          ],
           repoUrl: 'https://github.com/sample/awesome-cloud-toolkit',
           stars: 3420,
           isFeatured: true,
@@ -364,7 +411,12 @@ export class ProfileAgent {
         {
           name: 'realtime-collab-editor',
           description: 'Real-time collaborative code editor with WebRTC and CRDTs',
-          technologies: ['React', 'WebRTC', 'Yjs', 'Node.js'],
+          technologies: [
+            { name: 'React', encoded: 'React', color: '61DAFB', logo: 'react' },
+            { name: 'WebRTC', encoded: 'WebRTC', color: '333333', logo: 'webrtc' },
+            { name: 'Yjs', encoded: 'Yjs', color: '3399FF', logo: 'yjs' },
+            { name: 'Node.js', encoded: 'Node.js', color: '339933', logo: 'node.js' },
+          ],
           repoUrl: 'https://github.com/sample/realtime-collab-editor',
           stars: 1850,
           isFeatured: true,
@@ -372,13 +424,16 @@ export class ProfileAgent {
         {
           name: 'ml-inference-engine',
           description: 'Fast ML model inference engine optimized for edge devices',
-          technologies: ['Rust', 'ONNX', 'Python'],
+          technologies: [
+            { name: 'Rust', encoded: 'Rust', color: '000000', logo: 'rust' },
+            { name: 'ONNX', encoded: 'ONNX', color: '005CED', logo: 'onnx' },
+            { name: 'Python', encoded: 'Python', color: '3776AB', logo: 'python' },
+          ],
           repoUrl: 'https://github.com/sample/ml-inference-engine',
           stars: 890,
           isFeatured: true,
         },
       ],
-      education: [],
       certifications: [],
       socialLinks: [
         { platform: 'Twitter', url: 'https://twitter.com/alexdev' },
@@ -399,6 +454,14 @@ export class ProfileAgent {
         ],
         lastUpdated: new Date().toISOString(),
       },
+      techStack: [
+        { name: 'React', encoded: 'React', color: '61DAFB', logo: 'react' },
+        { name: 'TypeScript', encoded: 'TypeScript', color: '3178C6', logo: 'typescript' },
+        { name: 'Node.js', encoded: 'Node.js', color: '339933', logo: 'node.js' },
+        { name: 'PostgreSQL', encoded: 'PostgreSQL', color: '4169E1', logo: 'postgresql' },
+        { name: 'AWS', encoded: 'AWS', color: 'FF9900', logo: 'amazonaws' },
+        { name: 'Docker', encoded: 'Docker', color: '2496ED', logo: 'docker' },
+      ],
       templateId: 'minimal-dark',
     };
   }

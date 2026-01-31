@@ -126,7 +126,6 @@ export async function extractCommand(options: ExtractOptions = {}) {
       achievements: result.achievements,
       experience: [], // TODO: Extract from CV/LinkedIn
       projects: result.projects,
-      education: [], // TODO: Extract from CV/LinkedIn
       certifications: [], // TODO: Extract from CV/LinkedIn
       socialLinks: buildSocialLinks(context.githubProfile),
       githubStats: githubStats || {
@@ -137,6 +136,7 @@ export async function extractCommand(options: ExtractOptions = {}) {
         topLanguages: [],
         lastUpdated: new Date().toISOString(),
       },
+      techStack: result.techStack,
       templateId: config.defaultTemplate || 'minimal-dark',
     };
 
@@ -149,6 +149,7 @@ export async function extractCommand(options: ExtractOptions = {}) {
     console.log(chalk.white(`  • ${result.skills.length} skill categories`));
     console.log(chalk.white(`  • ${result.achievements.length} achievements`));
     console.log(chalk.white(`  • ${result.projects.length} projects`));
+    console.log(chalk.white(`  • ${result.techStack.length} technologies`));
     console.log(chalk.white(`  • Bio: ${result.bio.substring(0, 60)}...`));
 
     console.log(chalk.blue('\nNext step: Run "profile-agent generate" to create your README'));

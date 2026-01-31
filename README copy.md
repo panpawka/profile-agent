@@ -1,0 +1,168 @@
+<h1>Hey! I'm Pawel Szpiczakowski</h1>
+
+<p>Product Owner & Technical AI Lead | 10+ Years Building Production Systems | Applied AI, Automation & Full-Stack Development</p>
+
+---
+
+### About Me
+
+I'm a **Product Owner** and **Technical Lead** with over a decade of experience shipping production systems and leading cross-functional teams. Currently focused on AI-driven solutions, I combine deep technical expertise with strong product ownership to build scalable, cloud-native applications that solve real business problems.
+
+Based in **Wroclaw, Poland**, I'm the founder of **Lemonode**, where I architect and ship AI-powered SaaS products from concept to production. My work spans LLM integrations, agentic AI workflows, full-stack development, and automated deployment pipelines.
+
+### Tech Stack
+
+<p>
+  <img alt="TypeScript" src="https://img.shields.io/badge/-TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white" />
+  <img alt="React" src="https://img.shields.io/badge/-React-45b8d8?style=flat-square&logo=react&logoColor=white" />
+  <img alt="Python" src="https://img.shields.io/badge/-Python-3776AB?style=flat-square&logo=python&logoColor=white" />
+  <img alt="Node.js" src="https://img.shields.io/badge/-Node.js-43853d?style=flat-square&logo=Node.js&logoColor=white" />
+  <img alt="Docker" src="https://img.shields.io/badge/-Docker-46a2f1?style=flat-square&logo=docker&logoColor=white" />
+  <img alt="PostgreSQL" src="https://img.shields.io/badge/-PostgreSQL-336791?style=flat-square&logo=postgresql&logoColor=white" />
+  <img alt="Prisma" src="https://img.shields.io/badge/-Prisma-2D3748?style=flat-square&logo=prisma&logoColor=white" />
+  <img alt="OpenAI" src="https://img.shields.io/badge/-OpenAI-412991?style=flat-square&logo=openai&logoColor=white" />
+  <img alt="Google Gemini" src="https://img.shields.io/badge/-Google_Gemini-8E75B2?style=flat-square&logo=google&logoColor=white" />
+  <img alt="Vercel AI SDK" src="https://img.shields.io/badge/-Vercel_AI-000000?style=flat-square&logo=vercel&logoColor=white" />
+  <img alt="FastAPI" src="https://img.shields.io/badge/-FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white" />
+  <img alt="Astro" src="https://img.shields.io/badge/-Astro-FF5D01?style=flat-square&logo=astro&logoColor=white" />
+  <img alt="Tailwind CSS" src="https://img.shields.io/badge/-Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white" />
+  <img alt="Supabase" src="https://img.shields.io/badge/-Supabase-3ECF8E?style=flat-square&logo=supabase&logoColor=white" />
+  <img alt="AWS Lambda" src="https://img.shields.io/badge/-AWS_Lambda-FF9900?style=flat-square&logo=amazon-aws&logoColor=white" />
+  <img alt="AWS S3" src="https://img.shields.io/badge/-AWS_S3-569A31?style=flat-square&logo=amazon-s3&logoColor=white" />
+  <img alt="Stripe" src="https://img.shields.io/badge/-Stripe-008CDD?style=flat-square&logo=stripe&logoColor=white" />
+  <img alt="n8n" src="https://img.shields.io/badge/-n8n-EA4B71?style=flat-square&logo=n8n&logoColor=white" />
+  <img alt="Zapier" src="https://img.shields.io/badge/-Zapier-FF4A00?style=flat-square&logo=zapier&logoColor=white" />
+  <img alt="GitHub Actions" src="https://img.shields.io/badge/-Github_Actions-2088FF?style=flat-square&logo=github-actions&logoColor=white" />
+  <img alt="Unity" src="https://img.shields.io/badge/-Unity-000000?style=flat-square&logo=unity&logoColor=white" />
+  <img alt="C#" src="https://img.shields.io/badge/-C%23-239120?style=flat-square&logo=c-sharp&logoColor=white" />
+</p>
+
+### Current Projects
+
+I'm currently building and shipping AI-powered SaaS applications at **Lemonode**, focusing on:
+
+- Generative AI systems with multi-provider LLM integrations (OpenAI, Gemini, Vercel AI SDK)
+- Full-stack applications with React, TypeScript, Python, and modern frameworks (Wasp, FastAPI, Astro)
+- Cloud-native architectures with PostgreSQL, Supabase/Neon, AWS Lambda + S3, and Stripe integrations
+- Workflow automation with Zapier, n8n, and Make
+- Automated CI/CD pipelines with GitHub Actions and Docker
+
+### Featured Work
+
+<table>
+  <thead>
+    <tr>
+      <td><b>🚀 Project</b></td>
+      <td><b>📝 Description</b></td>
+      <td><b>⚡ Tech Stack</b></td>
+      <td><b>🔒 Visibility</b></td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><b>Multi-Tenant Registry Platform</b></td>
+      <td><i>Full-stack SaaS with complex data architecture, multi-level organizations, subscription billing, and public/private profile system</i></td>
+      <td>Wasp, React, TypeScript, PostgreSQL, Prisma, Stripe, AWS S3</td>
+      <td><img src="https://img.shields.io/badge/Private-red?style=flat-square" alt="Private" /></td>
+    </tr>
+    <tr>
+      <td><b>AI Content Generator</b></td>
+      <td><i>Platform with AI-powered structured data extraction, URL scraping, and automated content processing</i></td>
+      <td>Wasp, React, TypeScript, OpenAI API, Jina.ai, PostgreSQL</td>
+      <td><img src="https://img.shields.io/badge/Private-red?style=flat-square" alt="Private" /></td>
+    </tr>
+    <tr>
+      <td><b>AI Analytics SaaS</b></td>
+      <td><i>Platform with sentiment analysis, aspect-based mining, automated AI response generation, and multi-language support</i></td>
+      <td>Wasp, React, TypeScript, OpenAI API, PostgreSQL, Stripe, Vercel AI SDK</td>
+      <td><img src="https://img.shields.io/badge/Private-red?style=flat-square" alt="Private" /></td>
+    </tr>
+    <tr>
+      <td><b>Content Automation Microservice</b></td>
+      <td><i>Backend service for automated content creation and distribution with AI copywriting and template-based generation</i></td>
+      <td>FastAPI, Python, Supabase, OpenAI API, AWS S3, Docker</td>
+      <td><img src="https://img.shields.io/badge/Private-red?style=flat-square" alt="Private" /></td>
+    </tr>
+    <tr>
+      <td><a href="https://stagio.lemonode.pl"><b>Stagio</b></a></td>
+      <td><i>AI-powered real estate photo editor with instant enhancement, curated style templates, and video generation</i></td>
+      <td>Wasp, React, TypeScript, Generative AI, Remotion, PostgreSQL, Stripe</td>
+      <td><img src="https://img.shields.io/badge/Private-red?style=flat-square" alt="Private" /></td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/panpawka/Mainty"><b>Mainty</b></a></td>
+      <td><i>AI maintenance agent for property management with RAG, tool calling, and automated contractor dispatch</i></td>
+      <td>React, TypeScript, Express, OpenAI API, Vite, Tailwind CSS</td>
+      <td><img src="https://img.shields.io/badge/Public-brightgreen?style=flat-square" alt="Public" /></td>
+    </tr>
+  </tbody>
+</table>
+
+### Skills & Expertise
+
+**AI & Machine Learning**
+- LLM Integration (OpenAI, Google Gemini)
+- Generative AI & Vision APIs
+- Vercel AI SDK & AI Gateway implementation
+- Prompt Engineering & AI Agent Design
+- Conversational AI & Agentic Workflows
+- RAG (Retrieval-Augmented Generation)
+- Sentiment Analysis & NLP
+
+**Software Development**
+- Full-Stack Development (React, TypeScript, Node.js, Python)
+- Frontend: React 18, Vite, Astro, TailwindCSS, shadcn/ui
+- Backend: Express, FastAPI, Prisma ORM
+- Database: PostgreSQL, Supabase, Neon
+- API Development & Integration
+
+**Product & Leadership**
+- Product Ownership & Vision
+- End-to-End Product Responsibility
+- Technical Leadership & Team Coordination
+- Business-Technical Communication
+- Project Management & Roadmap Planning
+- Public Speaking (English & Polish)
+
+**DevOps & Automation**
+- CI/CD: GitHub Actions, Fastlane, Jenkins
+- Containerization: Docker, Docker Compose
+- Cloud Services: AWS Lambda, AWS S3, Vercel, Netlify, Cloudflare, Coolify
+- Workflow Automation: Zapier, n8n, Make
+- Payment Integration: Stripe, LemonSqueezy
+- Auth: OAuth, Email/OTP verification
+
+### Experience Highlights
+
+**Founder | Lemonode** (Oct 2024 - Present)
+- Building AI-focused SaaS applications with full product ownership from discovery to launch
+- Architecting LLM integrations, RAG systems, and agentic AI workflows
+- Developing full-stack applications with React, TypeScript, Python, and modern cloud-native patterns
+
+**CTO | Pixel Perfect Dude** (Jan 2022 - Present)
+- Leading Unity/C# development for multi-platform games (mobile, PC, console)
+- Implementing CI/CD pipelines with GitHub Actions and Fastlane
+- Driving applied AI R&D and internal tooling development
+
+**Developer Advocate & Lead Unity Developer | Ten Square Games** (2016 - 2022)
+- Created and delivered full-stack C# training curriculum for 12 engineers
+- Led cross-functional teams shipping data-driven product features
+- Implemented CI/CD pipelines reducing mobile release time
+
+### Where to Find Me
+
+<p>
+  <a href="https://www.linkedin.com/in/pawelszpiczakowski/" target="_blank"><img alt="LinkedIn" src="https://img.shields.io/badge/linkedin-%230077B5.svg?&style=for-the-badge&logo=linkedin&logoColor=white" /></a>
+  <a href="https://x.com/panpawka" target="_blank"><img alt="X (Twitter)" src="https://img.shields.io/badge/X-000000?style=for-the-badge&logo=x&logoColor=white" /></a>
+  <a href="mailto:p.szpiczakowski@gmail.com"><img alt="Email" src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white" /></a>
+</p>
+
+---
+
+<p align="center">
+  <i>Open to collaborations on AI-powered products, full-stack development, and product ownership consulting.</i>
+</p>
+
+<p align="center">
+  <sub>This README is automatically updated every 3 hours • Last refresh: Monday 26 January at 13:22 CET</sub>
+</p>

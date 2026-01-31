@@ -1,6 +1,6 @@
-import fs from 'fs';
-import path from 'path';
-import pdfParse from 'pdf-parse';
+import fs from "fs";
+import path from "path";
+import { PDFParse } from "pdf-parse";
 
 export interface PDFParseResult {
   text: string;
@@ -20,17 +20,22 @@ export class PDFParser {
     }
 
     const ext = path.extname(filePath).toLowerCase();
-    if (ext !== '.pdf') {
+    if (ext !== ".pdf") {
       throw new Error(`File must be a PDF. Received: ${ext}`);
     }
 
     const dataBuffer = fs.readFileSync(filePath);
-    const data = await pdfParse(dataBuffer);
+    const parser = new PDFParse({ data: dataBuffer });
+    const textData = await parser.getText();
+    const infoData = await parser.getInfo();
+
+    // Clean up resources
+    await parser.destroy();
 
     return {
-      text: this.cleanText(data.text),
-      pages: data.numpages,
-      info: data.info,
+      text: this.cleanText(textData.text),
+      pages: textData.total,
+      info: infoData.info,
     };
   }
 
@@ -41,9 +46,9 @@ export class PDFParser {
    */
   private cleanText(text: string): string {
     return text
-      .replace(/\r\n/g, '\n') // Normalize line endings
-      .replace(/\n{3,}/g, '\n\n') // Remove excessive line breaks
-      .replace(/[\u0000-\u001F\u007F-\u009F]/g, '') // Remove control characters
+      .replace(/\r\n/g, "\n") // Normalize line endings
+      .replace(/\n{3,}/g, "\n\n") // Remove excessive line breaks
+      .replace(/[\u0000-\u001F\u007F-\u009F]/g, "") // Remove control characters
       .trim();
   }
 
@@ -63,7 +68,8 @@ export class PDFParser {
    * @returns Array of phone numbers found
    */
   extractPhones(text: string): string[] {
-    const phoneRegex = /(\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/g;
+    const phoneRegex =
+      /(\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/g;
     return text.match(phoneRegex) || [];
   }
 }

@@ -2,7 +2,35 @@
 import fs from 'fs';
 import path from 'path';
 import Mustache from 'mustache';
-import type { ProfileData } from '@cli/src/types/profile';
+import type { ProfileData, Skill } from '@cli/src/types/profile';
+import { getTechColor, getTechLogo } from './tech-database';
+
+/**
+ * Encodes a string for shields.io badge labels
+ */
+function encodeShieldsLabel(text: string): string {
+  if (!text) return '';
+
+  return text
+    // 1. Double up dashes first (Shields.io syntax)
+    .replace(/-/g, '--') 
+    // 2. Replace spaces with underscores
+    .replace(/ /g, '_')
+    // 3. URL encode special chars (like # to %23, + to %2B)
+    .replace(/[^\w\s\-\_]/g, (char) => encodeURIComponent(char));
+}
+
+/**
+ * Ensures a skill has all required badge fields
+ */
+function ensureSkillBadgeFields(skill: Skill): Skill {
+  return {
+    ...skill,
+    encoded: skill.encoded || encodeShieldsLabel(skill.name),
+    color: skill.color || getTechColor(skill.name),
+    logo: skill.logo || getTechLogo(skill.name),
+  };
+}
 
 export interface TemplateConfig {
   id: string;
@@ -80,9 +108,18 @@ export class TemplateEngine {
   async render(templateId: string, profileData: ProfileData): Promise<string> {
     const template = this.loadTemplate(templateId);
 
+    // Ensure all skills have badge fields
+    const enrichedProfileData = {
+      ...profileData,
+      skills: profileData.skills?.map(category => ({
+        ...category,
+        skills: category.skills.map(ensureSkillBadgeFields)
+      })) || []
+    };
+
     // Prepare view data
     const viewData = {
-      ...profileData,
+      ...enrichedProfileData,
       ...template.config.variables,
     };
 

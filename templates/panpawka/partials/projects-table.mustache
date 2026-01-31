@@ -1,0 +1,32 @@
+### Featured Work
+
+<table>
+  <thead>
+    <tr>
+      <td><b>🚀 Project</b></td>
+      <td><b>📝 Description</b></td>
+      <td><b>⚡ Tech Stack</b></td>
+      <td><b>🔒 Visibility</b></td>
+    </tr>
+  </thead>
+  <tbody>
+{{#projects}}
+    <tr>
+      <td>{{#repoUrl}}<a href="{{repoUrl}}">{{/repoUrl}}<b>{{name}}</b>{{#repoUrl}}</a>{{/repoUrl}}</td>
+      <td><i>{{description}}{{repoUrl}}</i></td>
+      <td>
+        {{#technologies}}
+          <img src="https://img.shields.io/badge/-{{encoded}}-{{color}}?style=flat-square&logo={{logo}}&logoColor=white" alt="{{name}}" />
+        {{/technologies}}
+      </td>
+      <td>{{#repoUrl}}
+          <img src="https://img.shields.io/badge/Public-brightgreen?style=flat-square&logo=lock" alt="Public" />
+        {{/repoUrl}}
+
+        {{^repoUrl}}
+          <img src="https://img.shields.io/badge/Private-red?style=flat-square&logo=lock" alt="Private" />
+        {{/repoUrl}}</td>
+    </tr>
+{{/projects}}
+  </tbody>
+</table>

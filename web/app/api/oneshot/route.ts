@@ -1,30 +1,30 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { extractProfileData } from '@/lib/ai';
-import { TemplateEngine } from '@/lib/templates';
-import { parseFile } from '@/lib/parsers';
+import { NextRequest, NextResponse } from "next/server";
+import { extractProfileData } from "@/lib/ai";
+import { TemplateEngine } from "@/lib/templates";
+import { parseFile } from "@/lib/parsers";
 
-export const runtime = 'nodejs';
+export const runtime = "nodejs";
 export const maxDuration = 60;
 
 export async function POST(request: NextRequest) {
   try {
-    const contentType = request.headers.get('content-type') || '';
-    let content = '';
-    let githubUsername = '';
-    let templateId = 'minimal-dark';
-    let provider = 'gemini';
+    const contentType = request.headers.get("content-type") || "";
+    let content = "";
+    let githubUsername = "";
+    let templateId = "minimal-dark";
+    let provider = "gemini";
 
     // Handle both JSON and FormData
-    if (contentType.includes('multipart/form-data')) {
+    if (contentType.includes("multipart/form-data")) {
       // Handle file upload - parse only mode
       const formData = await request.formData();
-      const file = formData.get('file') as File | null;
-      
+      const file = formData.get("file") as File | null;
+
       if (file) {
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
         const parsed = await parseFile(buffer, file.name);
-        
+
         // Return parsed content only (no generation)
         return NextResponse.json({
           success: true,
@@ -35,45 +35,47 @@ export async function POST(request: NextRequest) {
           },
         });
       }
-      
+
       return NextResponse.json(
-        { success: false, error: 'No file provided' },
-        { status: 400 }
+        { success: false, error: "No file provided" },
+        { status: 400 },
       );
     } else {
       // Handle JSON - full generation mode
       const body = await request.json();
-      content = body.content || '';
-      githubUsername = body.githubUsername || '';
-      templateId = body.templateId || 'minimal-dark';
-      provider = body.provider || 'gemini';
+      content = body.content || "";
+      githubUsername = body.githubUsername || "";
+      templateId = body.templateId || "minimal-dark";
+      provider = body.provider || "gemini";
     }
 
-    if (!content || typeof content !== 'string' || !content.trim()) {
+    if (!content || typeof content !== "string" || !content.trim()) {
       return NextResponse.json(
-        { success: false, error: 'Content is required' },
-        { status: 400 }
+        { success: false, error: "Content is required" },
+        { status: 400 },
       );
     }
 
     // Step 1: Extract profile data using AI
-    let profileData = await extractProfileData(content, provider as 'gemini' | 'openai');
+    let profileData = await extractProfileData(
+      content,
+      provider as "gemini" | "openai",
+    );
 
     // Add metadata
     profileData = {
       ...profileData,
-      version: '1.0',
+      version: "1.0",
       generatedAt: new Date().toISOString(),
       templateId,
       skills: profileData.skills || [],
       achievements: profileData.achievements || [],
       experience: profileData.experience || [],
       projects: profileData.projects || [],
-      education: profileData.education || [],
       certifications: profileData.certifications || [],
       socialLinks: profileData.socialLinks || [],
       githubStats: {
-        username: githubUsername || '',
+        username: githubUsername || "",
         totalRepos: 0,
         totalStars: 0,
         totalForks: 0,
@@ -85,14 +87,24 @@ export async function POST(request: NextRequest) {
     // Step 2: Enrich with GitHub stats if username provided
     if (githubUsername) {
       try {
-        const response = await fetch(`https://api.github.com/users/${githubUsername}`);
+        const response = await fetch(
+          `https://api.github.com/users/${githubUsername}`,
+        );
         if (response.ok) {
           const userData = await response.json();
-          const reposResponse = await fetch(`https://api.github.com/users/${githubUsername}/repos?per_page=100`);
+          const reposResponse = await fetch(
+            `https://api.github.com/users/${githubUsername}/repos?per_page=100`,
+          );
           const repos = reposResponse.ok ? await reposResponse.json() : [];
 
-          const totalStars = repos.reduce((sum: number, repo: any) => sum + repo.stargazers_count, 0);
-          const totalForks = repos.reduce((sum: number, repo: any) => sum + repo.forks_count, 0);
+          const totalStars = repos.reduce(
+            (sum: number, repo: any) => sum + repo.stargazers_count,
+            0,
+          );
+          const totalForks = repos.reduce(
+            (sum: number, repo: any) => sum + repo.forks_count,
+            0,
+          );
 
           const languages: Record<string, number> = {};
           repos.forEach((repo: any) => {
@@ -101,7 +113,10 @@ export async function POST(request: NextRequest) {
             }
           });
 
-          const total = Object.values(languages).reduce((sum, count) => sum + count, 0);
+          const total = Object.values(languages).reduce(
+            (sum, count) => sum + count,
+            0,
+          );
           const topLanguages = Object.entries(languages)
             .map(([language, count]) => ({
               language,
@@ -120,7 +135,7 @@ export async function POST(request: NextRequest) {
           };
         }
       } catch (error) {
-        console.error('Failed to fetch GitHub stats:', error);
+        console.error("Failed to fetch GitHub stats:", error);
       }
     }
 
@@ -137,11 +152,12 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('One-shot generation error:', error);
-    const message = error instanceof Error ? error.message : 'Failed to generate profile';
+    console.error("One-shot generation error:", error);
+    const message =
+      error instanceof Error ? error.message : "Failed to generate profile";
     return NextResponse.json(
       { success: false, error: message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

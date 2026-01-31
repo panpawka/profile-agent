@@ -11,12 +11,19 @@ export interface ProfileData {
   achievements: Achievement[];
   experience: Experience[];
   projects: Project[];
-  education: Education[];
   certifications: Certification[];
   socialLinks: SocialLink[];
   githubStats: GitHubStats;
+  techStack: TechStackItem[];
   templateId: string;
   templateConfig?: Record<string, any>;
+}
+
+export interface TechStackItem {
+  name: string;           // Original name: "C#", "Tailwind CSS"
+  encoded: string;        // Encoded for shields.io: "C%23", "Tailwind_CSS"
+  color: string;          // Hex color without #: "239120"
+  logo: string;           // Logo identifier: "csharp"
 }
 
 export interface SkillCategory {
@@ -25,16 +32,18 @@ export interface SkillCategory {
 }
 
 export interface Skill {
-  name: string;
-  proficiency?: 'beginner' | 'intermediate' | 'advanced' | 'expert';
+  name: string;           // Original name: "C#", "Tailwind CSS"
+  encoded: string;        // Encoded for shields.io: "C%23", "Tailwind_CSS"
+  color: string;          // Hex color without #: "239120"
+  logo: string;           // Logo identifier: "csharp"
+  proficiency?: "beginner" | "intermediate" | "advanced" | "expert";
   yearsOfExperience?: number;
-  icon?: string;
 }
 
 export interface Achievement {
   id: string;
   text: string;
-  source: 'cv' | 'linkedin' | 'github' | 'manual';
+  source: "cv" | "linkedin" | "github" | "manual";
   metrics?: string[];
   isHighlighted: boolean;
 }
@@ -46,7 +55,6 @@ export interface Experience {
   endDate?: string;
   description: string;
   achievements: string[];
-  isCareerPivot?: boolean;
 }
 
 export interface Project {
@@ -54,7 +62,7 @@ export interface Project {
   description: string;
   repoUrl?: string;
   liveUrl?: string;
-  technologies: string[];
+  technologies: TechStackItem[];  // Changed from string[] to TechStackItem[]
   stars?: number;
   isFeatured: boolean;
 }

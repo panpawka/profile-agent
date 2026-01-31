@@ -1,7 +1,7 @@
-import fs from 'fs';
-import path from 'path';
-import Mustache from 'mustache';
-import type { ProfileData } from '../types/profile';
+import fs from "fs";
+import path from "path";
+import Mustache from "mustache";
+import type { ProfileData } from "../types/profile";
 
 export interface TemplateConfig {
   id: string;
@@ -24,7 +24,7 @@ export class TemplateEngine {
   private templatesDir: string;
 
   constructor() {
-    this.templatesDir = path.join(__dirname, '../../templates');
+    this.templatesDir = path.join(__dirname, "../../templates");
   }
 
   /**
@@ -40,29 +40,31 @@ export class TemplateEngine {
     }
 
     // Load config
-    const configPath = path.join(templateDir, 'config.json');
+    const configPath = path.join(templateDir, "config.json");
     if (!fs.existsSync(configPath)) {
       throw new Error(`Template config not found: ${templateId}/config.json`);
     }
-    const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+    const config = JSON.parse(fs.readFileSync(configPath, "utf-8"));
 
     // Load main template
-    const mainPath = path.join(templateDir, 'main.mustache');
+    const mainPath = path.join(templateDir, "main.mustache");
     if (!fs.existsSync(mainPath)) {
-      throw new Error(`Template main file not found: ${templateId}/main.mustache`);
+      throw new Error(
+        `Template main file not found: ${templateId}/main.mustache`,
+      );
     }
-    const mainTemplate = fs.readFileSync(mainPath, 'utf-8');
+    const mainTemplate = fs.readFileSync(mainPath, "utf-8");
 
     // Load partials
     const partials: Record<string, string> = {};
-    const partialsDir = path.join(templateDir, 'partials');
+    const partialsDir = path.join(templateDir, "partials");
     if (fs.existsSync(partialsDir)) {
       const partialFiles = fs.readdirSync(partialsDir);
       partialFiles.forEach((file) => {
-        if (file.endsWith('.mustache')) {
-          const partialName = file.replace('.mustache', '');
+        if (file.endsWith(".mustache")) {
+          const partialName = file.replace(".mustache", "");
           const partialPath = path.join(partialsDir, file);
-          partials[partialName] = fs.readFileSync(partialPath, 'utf-8');
+          partials[partialName] = fs.readFileSync(partialPath, "utf-8");
         }
       });
     }
@@ -93,7 +95,7 @@ export class TemplateEngine {
     const rendered = Mustache.render(
       template.mainTemplate,
       viewData,
-      template.partials
+      template.partials,
     );
 
     return this.cleanRenderedOutput(rendered);
@@ -112,9 +114,9 @@ export class TemplateEngine {
     const templates: TemplateConfig[] = [];
 
     templateDirs.forEach((dir) => {
-      const configPath = path.join(this.templatesDir, dir, 'config.json');
+      const configPath = path.join(this.templatesDir, dir, "config.json");
       if (fs.existsSync(configPath)) {
-        const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+        const config = JSON.parse(fs.readFileSync(configPath, "utf-8"));
         templates.push(config);
       }
     });
@@ -129,7 +131,7 @@ export class TemplateEngine {
    */
   private cleanRenderedOutput(output: string): string {
     return output
-      .replace(/\n{3,}/g, '\n\n') // Remove excessive line breaks
+      .replace(/\n{3,}/g, "\n\n") // Remove excessive line breaks
       .trim();
   }
 
@@ -145,16 +147,16 @@ export class TemplateEngine {
       const template = this.loadTemplate(templateId);
 
       // Check required fields in config
-      if (!template.config.id) errors.push('Missing config.id');
-      if (!template.config.name) errors.push('Missing config.name');
-      if (!template.config.version) errors.push('Missing config.version');
+      if (!template.config.id) errors.push("Missing config.id");
+      if (!template.config.name) errors.push("Missing config.name");
+      if (!template.config.version) errors.push("Missing config.version");
 
       // Check main template has required sections
-      if (!template.mainTemplate.includes('{{name}}')) {
-        errors.push('Main template missing {{name}} variable');
+      if (!template.mainTemplate.includes("{{name}}")) {
+        errors.push("Main template missing {{name}} variable");
       }
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unknown error';
+      const message = error instanceof Error ? error.message : "Unknown error";
       errors.push(message);
     }
 
