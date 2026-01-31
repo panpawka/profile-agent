@@ -1,16 +1,55 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { extractProfileData } from '@/lib/ai';
 import { TemplateEngine } from '@/lib/templates';
+import { parseFile } from '@/lib/parsers';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { content, provider = 'gemini', templateId = 'minimal-dark', githubUsername } = body;
+    const contentType = request.headers.get('content-type') || '';
+    let content = '';
+    let githubUsername = '';
+    let templateId = 'minimal-dark';
+    let provider = 'gemini';
 
-    if (!content || typeof content !== 'string') {
+    // Handle both JSON and FormData
+    if (contentType.includes('multipart/form-data')) {
+      // Handle file upload - parse only mode
+      const formData = await request.formData();
+      const file = formData.get('file') as File | null;
+      
+      if (file) {
+        const bytes = await file.arrayBuffer();
+        const buffer = Buffer.from(bytes);
+        const parsed = await parseFile(buffer, file.name);
+        
+        // Return parsed content only (no generation)
+        return NextResponse.json({
+          success: true,
+          data: {
+            content: parsed.content,
+            fileName: parsed.fileName,
+            fileType: parsed.fileType,
+          },
+        });
+      }
+      
+      return NextResponse.json(
+        { success: false, error: 'No file provided' },
+        { status: 400 }
+      );
+    } else {
+      // Handle JSON - full generation mode
+      const body = await request.json();
+      content = body.content || '';
+      githubUsername = body.githubUsername || '';
+      templateId = body.templateId || 'minimal-dark';
+      provider = body.provider || 'gemini';
+    }
+
+    if (!content || typeof content !== 'string' || !content.trim()) {
       return NextResponse.json(
         { success: false, error: 'Content is required' },
         { status: 400 }
@@ -18,7 +57,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Step 1: Extract profile data using AI
-    let profileData = await extractProfileData(content, provider);
+    let profileData = await extractProfileData(content, provider as 'gemini' | 'openai');
 
     // Add metadata
     profileData = {

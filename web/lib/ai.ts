@@ -1,27 +1,26 @@
 // AI extraction utilities - reuses CLI AI logic
-import { google } from '@ai-sdk/google';
-import { openai } from '@ai-sdk/openai';
-import { generateText } from 'ai';
-import type { ProfileData } from '@cli/src/types/profile';
+import { gateway } from "@ai-sdk/gateway";
+import { generateText } from "ai";
+import type { ProfileData } from "@cli/src/types/profile";
 
-export type AIProvider = 'gemini' | 'openai';
+export type AIProvider = "gemini" | "openai";
 
 /**
  * Get AI model based on provider
  */
 function getModel(provider: AIProvider) {
   switch (provider) {
-    case 'gemini':
+    case "gemini":
       if (!process.env.GEMINI_API_KEY) {
-        throw new Error('GEMINI_API_KEY not configured');
+        throw new Error("GEMINI_API_KEY not configured");
       }
-      return google('gemini-2.0-flash-exp');
+      return gateway("google/gemini-3-flash");
 
-    case 'openai':
+    case "openai":
       if (!process.env.OPENAI_API_KEY) {
-        throw new Error('OPENAI_API_KEY not configured');
+        throw new Error("OPENAI_API_KEY not configured");
       }
-      return openai('gpt-4o-mini');
+      return gateway("openai/gpt-5-nano");
 
     default:
       throw new Error(`Unknown AI provider: ${provider}`);
@@ -33,7 +32,7 @@ function getModel(provider: AIProvider) {
  */
 export async function extractProfileData(
   content: string,
-  provider: AIProvider = 'gemini'
+  provider: AIProvider = "openai",
 ): Promise<ProfileData> {
   const model = getModel(provider);
 
@@ -101,14 +100,17 @@ Return ONLY valid JSON, no markdown formatting, no explanation.`;
   });
 
   // Clean up response (remove markdown code blocks if present)
-  const cleaned = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+  const cleaned = text
+    .replace(/```json\n?/g, "")
+    .replace(/```\n?/g, "")
+    .trim();
 
   try {
     const profileData = JSON.parse(cleaned) as ProfileData;
     return profileData;
   } catch (error) {
-    console.error('Failed to parse AI response:', cleaned);
-    throw new Error('Failed to parse profile data from AI response');
+    console.error("Failed to parse AI response:", cleaned);
+    throw new Error("Failed to parse profile data from AI response");
   }
 }
 
@@ -117,7 +119,7 @@ Return ONLY valid JSON, no markdown formatting, no explanation.`;
  */
 export async function enrichWithGitHub(
   profileData: ProfileData,
-  githubUsername?: string
+  githubUsername?: string,
 ): Promise<ProfileData> {
   const username = githubUsername || profileData.githubStats?.username;
   if (!username) return profileData;
@@ -130,12 +132,20 @@ export async function enrichWithGitHub(
     const userData = await response.json();
 
     // Fetch repositories
-    const reposResponse = await fetch(`https://api.github.com/users/${username}/repos?per_page=100`);
+    const reposResponse = await fetch(
+      `https://api.github.com/users/${username}/repos?per_page=100`,
+    );
     const repos = reposResponse.ok ? await reposResponse.json() : [];
 
     // Calculate stats
-    const totalStars = repos.reduce((sum: number, repo: any) => sum + repo.stargazers_count, 0);
-    const totalForks = repos.reduce((sum: number, repo: any) => sum + repo.forks_count, 0);
+    const totalStars = repos.reduce(
+      (sum: number, repo: any) => sum + repo.stargazers_count,
+      0,
+    );
+    const totalForks = repos.reduce(
+      (sum: number, repo: any) => sum + repo.forks_count,
+      0,
+    );
 
     // Get language stats
     const languages: Record<string, number> = {};
@@ -145,7 +155,10 @@ export async function enrichWithGitHub(
       }
     });
 
-    const total = Object.values(languages).reduce((sum, count) => sum + count, 0);
+    const total = Object.values(languages).reduce(
+      (sum, count) => sum + count,
+      0,
+    );
     const topLanguages = Object.entries(languages)
       .map(([language, count]) => ({
         language,
@@ -167,7 +180,7 @@ export async function enrichWithGitHub(
       },
     };
   } catch (error) {
-    console.error('Failed to fetch GitHub stats:', error);
+    console.error("Failed to fetch GitHub stats:", error);
     return profileData;
   }
 }
