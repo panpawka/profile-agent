@@ -1125,7 +1125,7 @@ export const PromptInputSubmit = ({
       onStop();
       return;
     }
-    onClick?.(e as any);
+    onClick?.(e);
   };
 
   return (

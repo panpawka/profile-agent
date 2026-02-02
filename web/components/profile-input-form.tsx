@@ -117,7 +117,7 @@ const ProfileInputForm = ({ onExtracted }: ProfileInputFormProps) => {
         for (const file of message.files) {
           // Convert FileUIPart to File/Blob
           const blob = await fetch(file.url).then((r) => r.blob());
-          const fileName = (file as any).filename || "file.bin";
+          const fileName = (file as { filename?: string }).filename || "file.bin";
           const actualFile = new File([blob], fileName, {
             type: file.type || "application/octet-stream",
           });

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import {
   Download,
@@ -26,6 +26,7 @@ import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import type { ProfileData } from "@cli/src/types/profile";
+import type { TemplateConfig } from "@/lib/templates";
 import { cn } from "@/lib/utils";
 
 // Custom sanitize schema that allows HTML elements commonly used in GitHub READMEs
@@ -91,7 +92,7 @@ const ProfileTemplatePreview = ({
   onBack,
 }: ProfileTemplatePreviewProps) => {
   const [renderedTemplates, setRenderedTemplates] = useState<
-    Record<string, { markdown: string; config: any }>
+    Record<string, { markdown: string; config: TemplateConfig }>
   >({});
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -393,7 +394,7 @@ const ProfileTemplatePreview = ({
               <div className="flex items-center gap-2">
                 <Tabs
                   value={viewMode}
-                  onValueChange={(v) => setViewMode(v as any)}>
+                  onValueChange={(v) => setViewMode(v as "preview" | "code")}>
                   <TabsList className="h-8">
                     <TabsTrigger
                       value="preview"
@@ -495,7 +496,7 @@ const ProfileTemplatePreview = ({
                       [rehypeSanitize, customSanitizeSchema],
                     ]}
                     components={{
-                      code({ className, children, ...props }: any) {
+                      code({ className, children, ...props }: { className?: string; children: React.ReactNode }) {
                         const match = /language-(\w+)/.exec(className || "");
                         const inline = !className;
                         return !inline && match ? (
