@@ -67,6 +67,14 @@ const TEMPLATES = [
   { id: "panpawka", name: "Pan Pawka" },
 ];
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 interface ProfileTemplatePreviewProps {
   profileData: ProfileData;
   selectedTemplate: string;
@@ -92,6 +100,7 @@ const ProfileTemplatePreview = ({
   const { data: session } = useSession();
   const [isDeploying, setIsDeploying] = useState(false);
   const [deployedUrl, setDeployedUrl] = useState("");
+  const [deployFrequency, setDeployFrequency] = useState("weekly");
 
   const handleDeploy = async () => {
     if (!session) {
@@ -110,7 +119,7 @@ const ProfileTemplatePreview = ({
         body: JSON.stringify({
           markdown,
           setupAction: true,
-          frequency: "weekly",
+          frequency: deployFrequency,
           profileData,
         }),
       });
@@ -402,6 +411,20 @@ const ProfileTemplatePreview = ({
                 </Tabs>
               </div>
               <div className="flex items-center gap-2">
+                <div className="hidden sm:flex items-center gap-2 mr-2">
+                  <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Update:</span>
+                  <Select value={deployFrequency} onValueChange={setDeployFrequency}>
+                    <SelectTrigger size="sm" className="w-[100px]">
+                      <SelectValue placeholder="Frequency" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="manual">Manual</SelectItem>
+                      <SelectItem value="daily">Daily</SelectItem>
+                      <SelectItem value="weekly">Weekly</SelectItem>
+                      <SelectItem value="monthly">Monthly</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -539,7 +562,7 @@ const ProfileTemplatePreview = ({
                           {children}
                         </li>
                       ),
-                      a: ({ href, children, ...props }: any) => (
+                      a: ({ href, children, ...props }: { href?: string; children: React.ReactNode }) => (
                         <a
                           href={href}
                           className="text-blue-600 dark:text-blue-400 hover:underline"
