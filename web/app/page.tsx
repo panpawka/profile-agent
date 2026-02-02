@@ -26,17 +26,23 @@ function HomePageContent() {
   const [isLoading, setIsLoading] = useState(true);
 
   // Get persistence functions
-  const { loadProfileData, saveProfileData, clearProfileData, hasExistingData } =
+  const { loadProfileData, saveProfileData, clearProfileData } =
     useProfilePersistence();
 
   // Load data on mount
   useEffect(() => {
     const { data, step } = loadProfileData();
-    if (data) {
-      setProfileData(data);
-      setCurrentStep(step);
-    }
-    setIsLoading(false);
+    
+    // Defer state updates to avoid cascading render warning
+    const init = async () => {
+      if (data) {
+        setProfileData(data);
+        setCurrentStep(step);
+      }
+      setIsLoading(false);
+    };
+    
+    init();
   }, [loadProfileData]);
 
   // Save data whenever it changes

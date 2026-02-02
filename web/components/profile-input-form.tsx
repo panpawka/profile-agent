@@ -77,9 +77,12 @@ const ProfileInputForm = ({ onExtracted }: ProfileInputFormProps) => {
 
   // Check for existing data on mount
   useEffect(() => {
-    if (hasExistingData()) {
-      setShowExistingDataBanner(true);
-    }
+    const check = async () => {
+      if (hasExistingData()) {
+        setShowExistingDataBanner(true);
+      }
+    };
+    check();
   }, [hasExistingData]);
 
   const handleRestoreData = () => {
