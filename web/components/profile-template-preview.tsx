@@ -5,7 +5,20 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Download, Copy, Eye, Code, Loader2, ChevronLeft } from "lucide-react";
+import {
+  Download,
+  Copy,
+  Eye,
+  Code,
+  Loader2,
+  ChevronLeft,
+  Github,
+  Rocket,
+  CheckCircle,
+  LogOut,
+} from "lucide-react";
+import { useSession, signIn, signOut } from "next-auth/react";
+import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
@@ -76,6 +89,46 @@ const ProfileTemplatePreview = ({
   const [error, setError] = useState("");
   const [viewMode, setViewMode] = useState<"preview" | "code">("preview");
   const [copySuccess, setCopySuccess] = useState(false);
+  const { data: session } = useSession();
+  const [isDeploying, setIsDeploying] = useState(false);
+  const [deployedUrl, setDeployedUrl] = useState("");
+
+  const handleDeploy = async () => {
+    if (!session) {
+      signIn("github");
+      return;
+    }
+
+    const markdown = renderedTemplates[selectedTemplate]?.markdown;
+    if (!markdown) return;
+
+    setIsDeploying(true);
+    try {
+      const response = await fetch("/api/deploy", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          markdown,
+          setupAction: true,
+          frequency: "weekly",
+          profileData,
+        }),
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        setDeployedUrl(result.url);
+        toast.success("Successfully deployed to GitHub!");
+      } else {
+        toast.error(result.error || "Failed to deploy");
+      }
+    } catch (err) {
+      console.error("Deployment error:", err);
+      toast.error("An error occurred while deploying");
+    } finally {
+      setIsDeploying(false);
+    }
+  };
 
   // Render all templates when component mounts
   useEffect(() => {
@@ -266,6 +319,14 @@ const ProfileTemplatePreview = ({
             onClick={onStartOver}>
             Start Over
           </Button>
+          {session && (
+            <Button
+              variant="destructive"
+              onClick={() => signOut()}>
+              <LogOut className="h-4 w-4 mr-2" />
+              Sign Out
+            </Button>
+          )}
         </div>
       </div>
 
@@ -366,8 +427,39 @@ const ProfileTemplatePreview = ({
                   <Download className="h-3 w-3 mr-1" />
                   Download
                 </Button>
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={handleDeploy}
+                  disabled={isDeploying || !currentMarkdown}
+                  className="h-8 text-xs bg-green-600 hover:bg-green-700 text-white">
+                  {isDeploying ? (
+                    <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                  ) : session ? (
+                    <Rocket className="h-3 w-3 mr-1" />
+                  ) : (
+                    <Github className="h-3 w-3 mr-1" />
+                  )}
+                  {session ? "Deploy to GitHub" : "Sign in to Deploy"}
+                </Button>
               </div>
             </div>
+
+            {deployedUrl && (
+              <div className="bg-green-500/10 border-b border-green-500/20 px-4 py-3 flex items-center justify-between">
+                <div className="flex items-center gap-2 text-green-600 text-sm">
+                  <CheckCircle className="h-4 w-4" />
+                  <span>Your profile is live!</span>
+                </div>
+                <a
+                  href={deployedUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs font-medium text-green-600 underline hover:no-underline">
+                  View on GitHub
+                </a>
+              </div>
+            )}
 
             {/* Content */}
             <div className="max-h-[600px] overflow-y-auto">

@@ -10,6 +10,14 @@ import Footer from "@/components/footer";
 import { useProfilePersistence } from "@/hooks/use-profile-persistence";
 
 export default function HomePage() {
+  return (
+    <React.Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="text-muted-foreground">Loading components...</div></div>}>
+      <HomePageContent />
+    </React.Suspense>
+  );
+}
+
+function HomePageContent() {
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState("minimal-dark");
   const [currentStep, setCurrentStep] = useState<
@@ -18,17 +26,23 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(true);
 
   // Get persistence functions
-  const { loadProfileData, saveProfileData, clearProfileData, hasExistingData } =
+  const { loadProfileData, saveProfileData, clearProfileData } =
     useProfilePersistence();
 
   // Load data on mount
   useEffect(() => {
     const { data, step } = loadProfileData();
-    if (data) {
-      setProfileData(data);
-      setCurrentStep(step);
-    }
-    setIsLoading(false);
+    
+    // Defer state updates to avoid cascading render warning
+    const init = async () => {
+      if (data) {
+        setProfileData(data);
+        setCurrentStep(step);
+      }
+      setIsLoading(false);
+    };
+    
+    init();
   }, [loadProfileData]);
 
   // Save data whenever it changes

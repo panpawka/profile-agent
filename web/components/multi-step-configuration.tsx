@@ -461,7 +461,7 @@ function PersonalInfoStep({
               ))}
               <ComboboxChipsInput placeholder="Select or type technologies..." />
             </ComboboxChips>
-            <ComboboxContent anchor={anchor.current}>
+            <ComboboxContent anchor={anchor}>
               <ComboboxList>
                 <ComboboxEmpty>No matching technologies</ComboboxEmpty>
                 {TECH_CATEGORIES.map((category) => (
@@ -921,7 +921,7 @@ function ProjectCard({
               ))}
               <ComboboxChipsInput placeholder="Select or type technologies..." />
             </ComboboxChips>
-            <ComboboxContent anchor={anchor.current}>
+            <ComboboxContent anchor={anchor}>
               <ComboboxList>
                 <ComboboxEmpty>No matching technologies</ComboboxEmpty>
                 {TECH_CATEGORIES.map((category) => (

@@ -35,7 +35,10 @@ export function useProfilePersistence() {
     try {
       const json = JSON.stringify(data);
       // Use base64 encoding for URL-safe storage
-      return btoa(json);
+      if (typeof btoa !== "undefined") {
+        return btoa(json);
+      }
+      return Buffer.from(json).toString("base64");
     } catch (error) {
       console.error("Failed to encode profile data:", error);
       return "";
@@ -48,7 +51,12 @@ export function useProfilePersistence() {
   const decodeProfileData = useCallback((encoded: string): ProfileData | null => {
     try {
       if (!encoded) return null;
-      const json = atob(encoded);
+      let json = "";
+      if (typeof atob !== "undefined") {
+        json = atob(encoded);
+      } else {
+        json = Buffer.from(encoded, "base64").toString();
+      }
       return JSON.parse(json) as ProfileData;
     } catch (error) {
       console.error("Failed to decode profile data:", error);
@@ -63,6 +71,8 @@ export function useProfilePersistence() {
     data: ProfileData | null;
     step: "input" | "validation" | "preview";
   } => {
+    if (typeof window === "undefined") return { data: null, step: "input" };
+
     // Priority 1: Try to load from URL
     if (urlData) {
       const decoded = decodeProfileData(urlData);
@@ -101,6 +111,8 @@ export function useProfilePersistence() {
    */
   const saveProfileData = useCallback(
     (data: ProfileData | null, step: "input" | "validation" | "preview") => {
+      if (typeof window === "undefined") return;
+
       try {
         if (data) {
           // Save to localStorage
@@ -129,6 +141,8 @@ export function useProfilePersistence() {
    * Clear all stored data
    */
   const clearProfileData = useCallback(() => {
+    if (typeof window === "undefined") return;
+
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(STORAGE_STEP_KEY);
     setUrlData(null);
@@ -139,6 +153,8 @@ export function useProfilePersistence() {
    * Check if there's existing data
    */
   const hasExistingData = useCallback((): boolean => {
+    if (typeof window === "undefined") return false;
+
     if (urlData) return true;
     const stored = localStorage.getItem(STORAGE_KEY);
     return !!stored;
