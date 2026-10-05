@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import {
   Download,
@@ -26,6 +26,7 @@ import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import type { ProfileData } from "@cli/src/types/profile";
+import type { TemplateConfig } from "@/lib/templates";
 import { cn } from "@/lib/utils";
 
 // Custom sanitize schema that allows HTML elements commonly used in GitHub READMEs
@@ -67,6 +68,14 @@ const TEMPLATES = [
   { id: "panpawka", name: "Pan Pawka" },
 ];
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 interface ProfileTemplatePreviewProps {
   profileData: ProfileData;
   selectedTemplate: string;
@@ -83,7 +92,7 @@ const ProfileTemplatePreview = ({
   onBack,
 }: ProfileTemplatePreviewProps) => {
   const [renderedTemplates, setRenderedTemplates] = useState<
-    Record<string, { markdown: string; config: any }>
+    Record<string, { markdown: string; config: TemplateConfig }>
   >({});
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -92,6 +101,7 @@ const ProfileTemplatePreview = ({
   const { data: session } = useSession();
   const [isDeploying, setIsDeploying] = useState(false);
   const [deployedUrl, setDeployedUrl] = useState("");
+  const [deployFrequency, setDeployFrequency] = useState("weekly");
 
   const handleDeploy = async () => {
     if (!session) {
@@ -110,7 +120,7 @@ const ProfileTemplatePreview = ({
         body: JSON.stringify({
           markdown,
           setupAction: true,
-          frequency: "weekly",
+          frequency: deployFrequency,
           profileData,
         }),
       });
@@ -384,7 +394,7 @@ const ProfileTemplatePreview = ({
               <div className="flex items-center gap-2">
                 <Tabs
                   value={viewMode}
-                  onValueChange={(v) => setViewMode(v as any)}>
+                  onValueChange={(v) => setViewMode(v as "preview" | "code")}>
                   <TabsList className="h-8">
                     <TabsTrigger
                       value="preview"
@@ -402,6 +412,20 @@ const ProfileTemplatePreview = ({
                 </Tabs>
               </div>
               <div className="flex items-center gap-2">
+                <div className="hidden sm:flex items-center gap-2 mr-2">
+                  <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Update:</span>
+                  <Select value={deployFrequency} onValueChange={setDeployFrequency}>
+                    <SelectTrigger size="sm" className="w-[100px]">
+                      <SelectValue placeholder="Frequency" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="manual">Manual</SelectItem>
+                      <SelectItem value="daily">Daily</SelectItem>
+                      <SelectItem value="weekly">Weekly</SelectItem>
+                      <SelectItem value="monthly">Monthly</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -472,7 +496,7 @@ const ProfileTemplatePreview = ({
                       [rehypeSanitize, customSanitizeSchema],
                     ]}
                     components={{
-                      code({ className, children, ...props }: any) {
+                      code({ className, children, ...props }: { className?: string; children: React.ReactNode }) {
                         const match = /language-(\w+)/.exec(className || "");
                         const inline = !className;
                         return !inline && match ? (
@@ -539,7 +563,7 @@ const ProfileTemplatePreview = ({
                           {children}
                         </li>
                       ),
-                      a: ({ href, children, ...props }: any) => (
+                      a: ({ href, children, ...props }: { href?: string; children: React.ReactNode }) => (
                         <a
                           href={href}
                           className="text-blue-600 dark:text-blue-400 hover:underline"

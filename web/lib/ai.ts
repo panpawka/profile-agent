@@ -139,17 +139,17 @@ export async function enrichWithGitHub(
 
     // Calculate stats
     const totalStars = repos.reduce(
-      (sum: number, repo: any) => sum + repo.stargazers_count,
+      (sum: number, repo: { stargazers_count: number }) => sum + repo.stargazers_count,
       0,
     );
     const totalForks = repos.reduce(
-      (sum: number, repo: any) => sum + repo.forks_count,
+      (sum: number, repo: { forks_count: number }) => sum + repo.forks_count,
       0,
     );
 
     // Get language stats
     const languages: Record<string, number> = {};
-    repos.forEach((repo: any) => {
+    repos.forEach((repo: { language?: string }) => {
       if (repo.language) {
         languages[repo.language] = (languages[repo.language] || 0) + 1;
       }

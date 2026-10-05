@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { TemplateEngine } from '@/lib/templates';
+import { TemplateEngine, type TemplateConfig } from '@/lib/templates';
 import type { ProfileData } from '@cli/src/types/profile';
 
 export const runtime = 'nodejs';
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     const results = await Promise.all(renderPromises);
     
     // Convert to map
-    const renderedTemplates: Record<string, { markdown: string; config: any }> = {};
+    const renderedTemplates: Record<string, { markdown: string; config: TemplateConfig }> = {};
     results.forEach(({ templateId, markdown, config }) => {
       renderedTemplates[templateId] = { markdown, config };
     });

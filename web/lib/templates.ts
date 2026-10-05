@@ -40,7 +40,7 @@ export interface TemplateConfig {
   author: string;
   preview: string;
   variables: Record<string, string>;
-  features: Record<string, any>;
+  features: Record<string, unknown>;
 }
 
 export interface Template {

@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from "react";
+import { useCallback } from "react";
 import { useQueryState } from "nuqs";
 import type { ProfileData } from "@cli/src/types/profile";
 

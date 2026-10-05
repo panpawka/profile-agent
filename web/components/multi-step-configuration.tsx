@@ -26,7 +26,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import {
   Combobox,
-  ComboboxInput,
   ComboboxContent,
   ComboboxList,
   ComboboxItem,
@@ -46,7 +45,6 @@ import type {
 } from "@cli/src/types/profile";
 import {
   TECH_CATEGORIES,
-  ALL_TECHNOLOGIES as COMMON_TECHNOLOGIES,
   getTechColor,
   getTechLogo,
 } from "@/lib/tech-database";
@@ -636,10 +634,10 @@ function ExperienceStep({
     ]);
   };
 
-  const updateExperience = (
+  const updateExperience = <K extends keyof Experience>(
     index: number,
-    field: keyof Experience,
-    value: any,
+    field: K,
+    value: Experience[K],
   ) => {
     const updated = [...formData.experience];
     updated[index] = { ...updated[index], [field]: value };
@@ -799,7 +797,7 @@ function ProjectsStep({
     ]);
   };
 
-  const updateProject = (index: number, field: keyof Project, value: any) => {
+  const updateProject = <K extends keyof Project>(index: number, field: K, value: Project[K]) => {
     const updated = [...formData.projects];
     updated[index] = { ...updated[index], [field]: value };
     updateField("projects", updated);
@@ -846,7 +844,7 @@ function ProjectCard({
 }: {
   project: Project;
   index: number;
-  updateProject: (index: number, field: keyof Project, value: any) => void;
+  updateProject: <K extends keyof Project>(index: number, field: K, value: Project[K]) => void;
   removeProject: (index: number) => void;
 }) {
   const anchor = useComboboxAnchor();
