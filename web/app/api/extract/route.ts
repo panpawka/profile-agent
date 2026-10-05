@@ -144,7 +144,7 @@ export async function POST(request: NextRequest) {
     const aiResponse = (await extractProfileData(
       content,
       provider,
-    )) as any as AIExtractionResponse;
+    )) as unknown as AIExtractionResponse;
 
     // Step 2: Transform to proper ProfileData format
     const transformedData: ProfileData = {
@@ -190,7 +190,7 @@ export async function POST(request: NextRequest) {
       // Transform experience
       experience: (aiResponse.experience || []).map((exp) => ({
         company: exp.company || "",
-        title: exp.position || "",
+        title: exp.title || exp.position || "",
         startDate: exp.duration?.split(" - ")[0] || "",
         endDate:
           exp.duration?.split(" - ")[1] !== "Present"
@@ -225,7 +225,7 @@ export async function POST(request: NextRequest) {
           platform: "Website",
           url: aiResponse.website,
         },
-      ].filter(Boolean) as any[],
+      ].filter((link): link is { platform: string; url: string } => Boolean(link)),
 
       // Initialize GitHub stats
       githubStats: {
@@ -278,16 +278,16 @@ export async function POST(request: NextRequest) {
           const repos = reposResponse.ok ? await reposResponse.json() : [];
 
           const totalStars = repos.reduce(
-            (sum: number, repo: any) => sum + repo.stargazers_count,
+            (sum: number, repo: { stargazers_count: number }) => sum + repo.stargazers_count,
             0,
           );
           const totalForks = repos.reduce(
-            (sum: number, repo: any) => sum + repo.forks_count,
+            (sum: number, repo: { forks_count: number }) => sum + repo.forks_count,
             0,
           );
 
           const languages: Record<string, number> = {};
-          repos.forEach((repo: any) => {
+          repos.forEach((repo: { language?: string }) => {
             if (repo.language) {
               languages[repo.language] = (languages[repo.language] || 0) + 1;
             }
